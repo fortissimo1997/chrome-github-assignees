@@ -28,8 +28,10 @@ $(function(){
                 });
             },
             'beforeSend': function(xhr) {
-                if(!!token) {
-                    xhr.setRequestHeader('Authorization', 'token ' + token);
+                var localToken = token || localStorage['github-token'];
+                if(!!localToken) {
+                    xhr.setRequestHeader('Authorization', 'token ' + localToken);
+                    localStorage['github-token'] = localToken;
                 }
             }
         };
