@@ -1,0 +1,18 @@
+{
+    "manifest_version": 2,
+    "name": "GitHub Assignees",
+    "version": "1.0",
+    "description": "Showing the list of Github assignees.",
+    "content_scripts": [
+        {
+            "matches": [
+                "https://github.com/*/pulls*",
+                "https://github.com/*/issues*"
+            ],
+            "js": [
+                "lib/jquery-1.11.1.min.js",
+                "js/assignee.js"
+            ]
+        }
+    ]
+}
