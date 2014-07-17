@@ -6,8 +6,8 @@
     "content_scripts": [
         {
             "matches": [
-                "https://github.com/*/pulls*",
-                "https://github.com/*/issues*"
+                "https://github.com/*/pull*",
+                "https://github.com/*/issue*"
             ],
             "js": [
                 "lib/jquery-1.11.1.min.js",
