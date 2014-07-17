@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "GitHub Assignees",
-    "version": "1.0",
+    "version": "1.0.1",
     "description": "Showing the list of Github assignees.",
     "content_scripts": [
         {
@@ -10,7 +10,7 @@
                 "https://github.com/*/issue*"
             ],
             "js": [
-                "lib/jquery-1.11.1.min.js",
+                "lib/jquery-2.1.1.min.js",
                 "js/assignee.js"
             ]
         }
