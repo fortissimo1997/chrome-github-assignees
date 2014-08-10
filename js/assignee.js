@@ -1,18 +1,24 @@
 ///////////////////////////////////////////////////////////
-// (c)2013 fortissimo1997, all right reserved.
+// (c)2014 fortissimo1997, all right reserved.
 // author fortissimo1997, 2014/07/14
 ///////////////////////////////////////////////////////////
 
 $(function(){
     var re = new RegExp("^https://github.com/([^/]+)/([^/]+)/.+$");
     var match = re.exec(document.location);
+    var re_link = new RegExp("^<(https://api.github.com/[^>]+)>; rel=\"next\",");
+    var assignees = {
+        'user_name': [],
+        'details': []
+    };
     if(!!match) {
-        getIssue(null);
+        var path = 'https://api.github.com/repos/' + match[1] + '/' + match[2] +  '/issues?filter=all&per_page=100';
+        getIssue(path, null);
     }
 
-    function getIssue(token) {
+    function getIssue(request_path, token) {
         var ajax_attr = {
-            'url': 'https://api.github.com/repos/' + match[1] + '/' + match[2] +  '/issues?filter=all',
+            'url': request_path,
             'dataType': 'json',
             'type': 'GET',
             'success': createTable,
@@ -38,9 +44,9 @@ $(function(){
         $.ajax(ajax_attr);
     }
 
-    function createTable(data, dataType) {
+    function createTable(data, dataType, xhr) {
         $('#github-assignees-table').remove();
-        var assignees = data.filter(function(single) {
+        data.filter(function(single) {
             return single.assignee && single.assignee.login;
         }).map(function(single) {
             return single.assignee;
@@ -55,10 +61,9 @@ $(function(){
                 prev.user_name.push(curr.login);
             }
             return prev;
-        }, {
-            'user_name': [],
-            'details': []
-        });
+        }, assignees);
+        var match = re_link.exec(xhr.getResponseHeader('Link'));
+        if(!!match) return getIssue(match[1], null);
         var $table = $('<table>')
                 .css({'border': '1px #000 solid'})
                 .append('<tr><th>avatar</th><th>user</th><th>count</th></tr>');
@@ -82,6 +87,7 @@ $(function(){
         var $div = createGithubAssigneesDiv();
         $div.append($table);
         $('body').append($div);
+        return 0;
     }
 
     function createGithubAssigneesDiv() {
