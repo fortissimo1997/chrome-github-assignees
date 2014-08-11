@@ -30,7 +30,7 @@ $(function(){
                 $('body').append($div.append('<p>Authentication is required!</p>' + input_string));
                 $('#github-assignees-button').on('click', function() {
                     var token = $('#github-assignees-token').val();
-                    getIssue(token);
+                    getIssue(request_path, token);
                 });
             },
             'beforeSend': function(xhr) {
