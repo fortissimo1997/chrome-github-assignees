@@ -64,7 +64,7 @@ $(function(){
         }, assignees);
         var match = re_link.exec(xhr.getResponseHeader('Link'));
         if(!!match) return getIssue(match[1], null);
-        var $table = createTable();
+        var $table = createTableTag();
         for(var i = 0, len = assignees.details.length; i < len; i++) {
             var a = assignees.details[i];
             var $avatar = $('<img>');
@@ -88,7 +88,7 @@ $(function(){
         return 0;
     }
 
-    function createTable() {
+    function createTableTag() {
         return $('<table>')
             .css({'border': '1px #000 solid'})
             .append('<tr><th>avatar</th><th>user</th><th>count</th></tr>');
