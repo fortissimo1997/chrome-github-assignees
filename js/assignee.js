@@ -66,21 +66,7 @@ $(function(){
         if(!!match) return getIssue(match[1], null);
         var $table = createTableTag();
         for(var i = 0, len = assignees.details.length; i < len; i++) {
-            var a = assignees.details[i];
-            var $avatar = $('<img>');
-            $avatar
-                .attr('alt', a.assignee.login)
-                .attr('width', 16)
-                .attr('height', 16)
-                .attr('src', a.assignee.avatar_url);
-            var $avatar_td = $('<td>')
-                    .append($avatar)
-                    .attr('align', 'center');
-            var $tr = $('<tr>')
-                    .append($avatar_td)
-                    .append($('<td>' + a.assignee.login + '</td>').attr('align', 'center'))
-                    .append($('<td>' + a.count + '</td>').attr('align', 'center'));
-            $table.append($tr);
+            $table.append(createTr(assignees.details[i]));
         }
         var $div = createGithubAssigneesDiv();
         $div.append($table);
@@ -92,6 +78,22 @@ $(function(){
         return $('<table>')
             .css({'border': '1px #000 solid'})
             .append('<tr><th>avatar</th><th>user</th><th>count</th></tr>');
+    }
+
+    function createTr(a) {
+        var $avatar = $('<img>');
+        $avatar
+            .attr('alt', a.assignee.login)
+            .attr('width', 16)
+            .attr('height', 16)
+            .attr('src', a.assignee.avatar_url);
+        var $avatar_td = $('<td>')
+                .append($avatar)
+                .attr('align', 'center');
+        return $('<tr>')
+            .append($avatar_td)
+            .append($('<td>' + a.assignee.login + '</td>').attr('align', 'center'))
+            .append($('<td>' + a.count + '</td>').attr('align', 'center'));
     }
 
     function createGithubAssigneesDiv() {
