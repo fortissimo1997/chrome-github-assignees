@@ -11,28 +11,19 @@ $(function(){
         'user_name': [],
         'details': []
     };
+    var path;
     if(!!match) {
-        var path = 'https://api.github.com/repos/' + match[1] + '/' + match[2] +  '/issues?filter=all&per_page=100';
-        getIssue(path, null);
+        path = 'https://api.github.com/repos/' + match[1] + '/' + match[2] +  '/issues?filter=all&per_page=100';
+        getIssue(null);
     }
 
-    function getIssue(request_path, token) {
+    function getIssue(token) {
         var ajax_attr = {
-            'url': request_path,
+            'url': path,
             'dataType': 'json',
             'type': 'GET',
             'success': createTable,
-            'error': function() {
-                $('#github-assignees-table').remove();
-                var $div = createGithubAssigneesDiv();
-                var input_string =  '<label for="github-assignees-token">Token:</label><input type="text" name="token" id="github-assignees-token" /><br />'
-                        + '<button id="github-assignees-button">Get Assignees</button>';
-                $('body').append($div.append('<p>Authentication is required!</p>' + input_string));
-                $('#github-assignees-button').on('click', function() {
-                    var token = $('#github-assignees-token').val();
-                    getIssue(request_path, token);
-                });
-            },
+            'error': createTokenForm,
             'beforeSend': function(xhr) {
                 var localToken = token || localStorage['github-token'];
                 if(!!localToken) {
@@ -42,6 +33,19 @@ $(function(){
             }
         };
         $.ajax(ajax_attr);
+    }
+
+    function createTokenForm(xhr) {
+        console.log(xhr);
+        $('#github-assignees-table').remove();
+        var $div = createGithubAssigneesDiv();
+        var input_string =  '<label for="github-assignees-token">Token:</label><input type="text" name="token" id="github-assignees-token" /><br />'
+                + '<button id="github-assignees-button">Get Assignees</button>';
+        $('body').append($div.append('<p>Authentication is required!</p>' + input_string));
+        $('#github-assignees-button').on('click', function() {
+            var token = $('#github-assignees-token').val();
+            getIssue(token);
+        });
     }
 
     function createTable(data, dataType, xhr) {
@@ -63,7 +67,10 @@ $(function(){
             return prev;
         }, assignees);
         var match = re_link.exec(xhr.getResponseHeader('Link'));
-        if(!!match) return getIssue(match[1], null);
+        if(!!match) {
+            path = match[1];
+            return getIssue(null);
+        }
         var $table = createTableTag();
         for(var i = 0, len = assignees.details.length; i < len; i++) {
             $table.append(createTr(assignees.details[i]));
