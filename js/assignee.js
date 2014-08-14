@@ -50,6 +50,23 @@ $(function(){
 
     function createTable(data, dataType, xhr) {
         $('#github-assignees-table').remove();
+        mapReduceAssingees(data);
+        var match = re_link.exec(xhr.getResponseHeader('Link'));
+        if(!!match) {
+            path = match[1];
+            return getIssue(null);
+        }
+        var $table = createTableTag();
+        for(var i = 0, len = assignees.details.length; i < len; i++) {
+            $table.append(createTr(assignees.details[i]));
+        }
+        var $div = createGithubAssigneesDiv();
+        $div.append($table);
+        $('body').append($div);
+        return 0;
+    }
+
+    function mapReduceAssingees(data) {
         data.filter(function(single) {
             return single.assignee && single.assignee.login;
         }).map(function(single) {
@@ -66,19 +83,6 @@ $(function(){
             }
             return prev;
         }, assignees);
-        var match = re_link.exec(xhr.getResponseHeader('Link'));
-        if(!!match) {
-            path = match[1];
-            return getIssue(null);
-        }
-        var $table = createTableTag();
-        for(var i = 0, len = assignees.details.length; i < len; i++) {
-            $table.append(createTr(assignees.details[i]));
-        }
-        var $div = createGithubAssigneesDiv();
-        $div.append($table);
-        $('body').append($div);
-        return 0;
     }
 
     function createTableTag() {
